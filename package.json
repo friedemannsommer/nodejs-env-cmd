@@ -1,0 +1,36 @@
+{
+  "name": "nodejs-env-cmd",
+  "version": "1.0.0",
+  "description": "cross environment .env file parsing and command execution",
+  "main": "dist/index.js",
+  "bin": {
+    "env-cmd": "dist/bin/env-cmd.js"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/tsc --p ./tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/friedemannsommer/nodejs-env-cmd.git"
+  },
+  "author": "Friedemann Sommer <friedemannsommer@yahoo.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/friedemannsommer/nodejs-env-cmd/issues"
+  },
+  "homepage": "https://github.com/friedemannsommer/nodejs-env-cmd#readme",
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.0",
+    "@types/dotenv": "^4.0.2",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "cross-spawn": "^6.0.5",
+    "dotenv": "^5.0.1",
+    "tslib": "^1.9.0"
+  }
+}

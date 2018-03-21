@@ -1,0 +1,58 @@
+{
+    "compilerOptions": {
+        "target": "es2018",
+        "newLine": "LF",
+        "locale": "en-us",
+        "charset": "utf-8",
+        "rootDir": "./src",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "pretty": true,
+        "noEmit": false,
+        "allowJs": false,
+        "sourceMap": true,
+        "listFiles": false,
+        "declaration": true,
+        "importHelpers": true,
+        "noEmitOnError": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "removeComments": true,
+        "noEmitHelpers": true,
+        "noImplicitReturns": true,
+        "listEmittedFiles": false,
+        "strictNullChecks": false,
+        "preserveConstEnums": false,
+        "allowUnusedLabels": false,
+        "noUnusedParameters": true,
+        "skipDefaultLibCheck": false,
+        "noImplicitUseStrict": false,
+        "emitDecoratorMetadata": true,
+        "allowUnreachableCode": false,
+        "experimentalDecorators": true,
+        "noFallthroughCasesInSwitch": false,
+        "allowSyntheticDefaultImports": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": [
+            "es2015",
+            "es2016",
+            "es2017",
+            "es2018"
+        ]
+    },
+    "exclude": [
+        ".git",
+        ".idea",
+        ".vscode",
+        ".gitignore",
+        "README",
+        "README.md",
+        "node_modules"
+    ],
+    "include": [
+        "./src/**/*.ts"
+    ]
+}
