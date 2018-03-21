@@ -1,6 +1,6 @@
 {
   "name": "nodejs-env-cmd",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "cross environment .env file parsing and command execution",
   "main": "dist/index.js",
   "bin": {

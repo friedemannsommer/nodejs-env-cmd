@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import envCommand from '../index'
 
 function parseArgs(args: string[]): void {
