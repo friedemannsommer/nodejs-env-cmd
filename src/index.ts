@@ -6,17 +6,33 @@ import { exec, ChildProcess } from 'child_process'
 import { RejectFn, ResolveFn } from '../src/typings/promise-helper.d'
 import { IOptions } from '../src/typings/options'
 
-interface IChildProcess extends ChildProcess {
-    hasExited: boolean
+function killHostProcess(code: number = 0): void {
+    process.exit(code)
 }
 
-function killChildProcess(childProcess: IChildProcess): (signal?: string) => () => void {
-    return (signal: NodeJS.Signals = 'SIGTERM'): () => void => {
-        return () => {
-            if (!childProcess.hasExited) {
-                childProcess.kill(signal)
-            }
-        }
+function terminateChildProcess(childProcess: ChildProcess, signal: NodeJS.Signals): void {
+    if (!childProcess.disconnect && !childProcess.killed) {
+        childProcess.kill(signal)
+    }
+}
+
+function pipeSignalChildProcess(childProcess: ChildProcess): (signal?: string) => void {
+    return (signal: NodeJS.Signals = 'SIGTERM'): void => {
+        terminateChildProcess(childProcess, signal)
+    }
+}
+
+function killChildProcess(childProcess: ChildProcess): () => void {
+    return () => {
+        terminateChildProcess(childProcess, 'SIGTERM')
+
+        const timer = setTimeout(() => {
+            terminateChildProcess(childProcess, 'SIGKILL')
+        }, 5000)
+
+        childProcess.once('exit', () => {
+            clearTimeout(timer)
+        })
     }
 }
 
@@ -36,29 +52,39 @@ function loadEnvFile(path: string): Promise<string> {
     })
 }
 
+function writeChunk(stdErr: boolean): (chunk: Buffer | string) => void {
+    if (stdErr) {
+        return (chunk: Buffer | string) => {
+            process.stderr.write(chunk)
+        }
+    }
+
+    return (chunk: Buffer | string) => {
+        process.stdout.write(chunk)
+    }
+}
+
 function runCommand(cmd: string, env: object, timeout: number): ChildProcess {
     const childProcess = exec(cmd, {
         cwd: process.cwd(),
-        env,
         encoding: 'utf8',
+        env,
         timeout
-    }) as IChildProcess
+    })
 
-    childProcess.hasExited = false
-
+    const pipeSignal = pipeSignalChildProcess(childProcess)
     const killProcess = killChildProcess(childProcess)
 
-    childProcess.stderr.on('data', console.error)
-    childProcess.stdout.on('data', console.log)
-    childProcess.once('exit', () => childProcess.hasExited = true)
+    childProcess.stderr.on('data', writeChunk(true))
+    childProcess.stdout.on('data', writeChunk(false))
     childProcess.once('error', (err) => console.error(err))
-    process.once('beforeExit', killProcess())
-    process.once('uncaughtException', killProcess())
-    process.once('unhandledRejection', killProcess())
-    process.once('SIGTERM', killProcess())
-    process.once('SIGINT', killProcess('SIGINT'))
-    process.once('SIGBREAK', killProcess('SIGBREAK'))
-    process.once('SIGHUP', killProcess('SIGHUP'))
+    process.once('beforeExit', killProcess)
+    process.once('uncaughtException', killProcess)
+    process.once('unhandledRejection', killProcess)
+    process.once('SIGTERM', pipeSignal)
+    process.once('SIGINT', pipeSignal)
+    process.once('SIGBREAK', pipeSignal)
+    process.once('SIGHUP', pipeSignal)
 
     return childProcess
 }
@@ -97,7 +123,7 @@ export default async function envCommand(
     )
 
     if (closeAfterFinish) {
-        childProcess.once('exit', (code: number = 0) => process.exit(code))
+        childProcess.once('exit', killHostProcess)
     }
 
     return childProcess

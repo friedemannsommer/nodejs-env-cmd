@@ -22,11 +22,22 @@ env-cmd --envFile ./path/to/my/env.file node path/to/my/code.js
 ```
 
 ## API
-#### CLI
+### CLI
 Options
 * envFile [optional]
-    * pass a path to env file (can be absolute or relative)
+    * pass a path to a env file (can be absolute or relative)
 * timeout [optional]
     * pass a timeout for the command (this is in milliseconds)
 * preferParentEnv [optional]
     * if a key exists in the parent (or global) environment use the value of the parent
+### JS / TS
+```typescript
+import runCommand from 'nodejs-env-cmd'
+
+const childProcess = runCommand('node /path/to/my/file.js', {
+    envFilePath: '/path/to/my/env.file', // path to a env file (default: '.env') optional
+    closeAfterFinish: false, // terminate host porcess after command has finished (default: false) [optional]
+    preferParentEnv: false, // prefer the parent env (or global env) (default: false) [optional]
+    timeout: 0 // time in milliseconds (default: 0) [optional]
+})
+```
