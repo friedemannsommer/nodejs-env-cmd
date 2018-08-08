@@ -1,17 +1,34 @@
 #!/usr/bin/env node
+import * as minimist from 'minimist'
 import envCommand from '../index'
 
 function parseArgs(args: string[]): void {
-    const envFileOptionIndex = args.indexOf('--envFile')
-    let envFile = '.env'
+    const options = minimist(args, {
+        default: {
+            timeout: 0,
+            envFile: '.env',
+            preferParentEnv: false
+        },
+        string: ['envFile', 'timeout'],
+        boolean: ['preferParentEnv'],
+        stopEarly: true
+    })
 
-    if (envFileOptionIndex !== -1) {
-        envFile = args.splice(envFileOptionIndex, 2)[1]
+    let timeout = options.timeout
+
+    if (typeof timeout === 'string') {
+        timeout = parseInt(timeout, 10)
     }
 
-    envCommand(args[0], args.slice(1), {
+    if (isNaN(timeout) || !isFinite(timeout)) {
+        timeout = 0
+    }
+
+    envCommand(options._.join(' '), {
         closeAfterFinish: true,
-        envFilePath: envFile
+        envFilePath: options.envFile,
+        preferParentEnv: options.preferParentEnv,
+        timeout
     }).catch((err: Error) => {
         console.error(err)
         process.exit(1)
