@@ -2,3 +2,6 @@
 src/*
 !src/typings
 tslint.json
+.test.env
+.travis.yml
+tsconfig.json
