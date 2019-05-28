@@ -4,14 +4,14 @@
   "description": "cross environment .env file parsing and command execution",
   "main": "dist/index.js",
   "bin": {
-    "env-cmd": "dist/bin/env-cmd.js"
+    "nodejs-env-cmd": "dist/bin/env-cmd.js"
   },
   "engines": {
     "node": ">=6"
   },
   "scripts": {
     "build": "./node_modules/.bin/tsc --p ./tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run build && ./node_modules/.bin/ava --verbose --color"
   },
   "repository": {
     "type": "git",
@@ -24,13 +24,28 @@
   },
   "homepage": "https://github.com/friedemannsommer/nodejs-env-cmd#readme",
   "devDependencies": {
-    "@types/dotenv": "^4.0.3",
-    "@types/minimist": "^1.2.0",
-    "typescript": "^3.0.1"
+    "@types/cross-spawn": "6.0.0",
+    "@types/dotenv": "6.1.1",
+    "@types/minimist": "1.2.0",
+    "ava": "1.4.1",
+    "typescript": "3.4.5"
   },
   "dependencies": {
-    "dotenv": "^6.0.0",
-    "minimist": "^1.2.0",
-    "tslib": "^1.9.3"
+    "cross-spawn": "6.0.5",
+    "dotenv": "8.0.0",
+    "minimist": "1.2.0",
+    "tslib": "1.9.3"
+  },
+  "ava": {
+    "files": [
+      "dist/tests/*.test.js"
+    ],
+    "sources": [
+      "src/**/*.ts"
+    ],
+    "cache": true,
+    "failWithoutAssertions": true,
+    "verbose": true,
+    "compileEnhancements": true
   }
 }
